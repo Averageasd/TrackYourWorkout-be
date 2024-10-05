@@ -1,0 +1,15 @@
+meta {
+  name: get exercises testing
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:5239/api/exercises
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKV1RTdWJqZWN0IiwianRpIjoiNjQ5ZGVkNWQtMDJhMi00M2JiLTlkMTctYTMzYTEyY2FlYjk4IiwidXNlcklkIjoidXNlcklkIiwibmFtZSI6ImFiYyIsImV4cCI6MTcyNzY2MTc1NCwiaXNzIjoiSldUSXNzdWVyIiwiYXVkIjoiSldUQXVkaWVuY2UifQ.JCKrOke5o9ak-_hbu7K4oR2RG-jhROiDIwYsc--Orew
+}
