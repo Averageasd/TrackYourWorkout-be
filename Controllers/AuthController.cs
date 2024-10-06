@@ -5,7 +5,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TrackYourWorkout.Configurations;
+using TrackYourWorkout.Context;
 using TrackYourWorkout.DTOs;
+using TrackYourWorkout.Utilities;
 
 namespace TrackYourWorkout.Controllers
 {
@@ -17,11 +19,15 @@ namespace TrackYourWorkout.Controllers
     public class AuthController : ControllerBase
     {
 
-        private readonly IConfiguration _configuration;
         private readonly JWTSettingsConfiguration _jwtOptions;
-        public AuthController(IOptions<JWTSettingsConfiguration> jwtOptions)
+        private readonly DapperContext _db_context;
+        public AuthController(
+            IOptions<JWTSettingsConfiguration> jwtOptions,
+            DapperContext context
+        )
         {
             _jwtOptions = jwtOptions.Value;
+            _db_context = context;
         }
 
         [HttpPost]
@@ -29,6 +35,13 @@ namespace TrackYourWorkout.Controllers
         public IActionResult Login([FromBody] LoginDTO loginDTO)
         {
 
+            // username and password were not entered
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(
+                    ModelStateErrorGenerator.GenerateErrorMessage(ModelState)
+                    );
+            }
             // just some dummy data. will use real data later
             // when we connect to database
             var attemptLoginUser = new
@@ -56,10 +69,10 @@ namespace TrackYourWorkout.Controllers
                     _jwtOptions.Issuer,
                     _jwtOptions.Audience,
                     claims,
-                    expires:DateTime.UtcNow.AddMinutes(60),
+                    expires: DateTime.UtcNow.AddMinutes(5),
                     signingCredentials: signIn
                 );
-                string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);   
+                string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
 
                 // return token. User will use this token to access protected rotues
                 return Ok(new

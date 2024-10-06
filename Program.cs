@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TrackYourWorkout.Configurations;
+using TrackYourWorkout.Context;
 
 namespace TrackYourWorkout
 {
@@ -15,6 +16,11 @@ namespace TrackYourWorkout
             builder.Services.Configure<JWTSettingsConfiguration>(
                 config.GetSection("JWTSettings")
             );
+            builder.Services.Configure<DBSettingsConfiguration>(
+                config.GetSection("ConnectionStrings")
+            );
+
+            builder.Services.AddSingleton<DapperContext>();
 
             builder.Services.AddAuthentication(options =>
             {
